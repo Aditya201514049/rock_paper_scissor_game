@@ -1,7 +1,23 @@
+
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase';
 import GoogleSignIn from '@/components/GoogleSignIn';
 
-
 const SignInPage = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        router.push('/'); // Redirect to Home page if user is already signed in
+      }
+    });
+    return () => unsubscribe();
+  }, [router]);
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
       <div className="card w-96 bg-base-100 shadow-2xl p-8 transform transition duration-300 hover:scale-105">

@@ -15,7 +15,7 @@ const GoogleSignIn = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       // User info: result.user
-      router.push('/page'); // Redirect to the desired page after successful login
+      router.push('/'); // Redirect to the desired page after successful login
     } catch (error) {
       console.error('Error during sign-in:', error);
     } finally {

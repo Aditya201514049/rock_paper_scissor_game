@@ -1,84 +1,37 @@
-"use client";
 
-import { useState } from 'react';
+'use client';
 
-const moves = ['rock', 'paper', 'scissors'];
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase';
+import GameLogic from '@/components/GameLogic';
 
-export default function Home() {
-  const [userMove, setUserMove] = useState('');
-  const [computerMove, setComputerMove] = useState('');
-  const [result, setResult] = useState('');
-  const [userScore, setUserScore] = useState(0);
-  const [computerScore, setComputerScore] = useState(0);
+const HomePage = () => {
+  const [user, setUser] = useState(null);
+  const router = useRouter();
 
-  const playGame = (move) => {
-    const randomMove = moves[Math.floor(Math.random() * moves.length)];
-    setUserMove(move);
-    setComputerMove(randomMove);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if (!authUser) {
+        // If no user is signed in, redirect to the sign-in page
+        router.push('/signin');
+      } else {
+        setUser(authUser);
+      }
+    });
 
-    if (move === randomMove) {
-      setResult("It's a draw!");
-    } else if (
-      (move === 'rock' && randomMove === 'scissors') ||
-      (move === 'paper' && randomMove === 'rock') ||
-      (move === 'scissors' && randomMove === 'paper')
-    ) {
-      setResult("You win!");
-      setUserScore((prevScore) => prevScore + 1);
-    } else {
-      setResult("You lose!");
-      setComputerScore((prevScore) => prevScore + 1);
-    }
-  };
+    return () => unsubscribe(); // Clean up the listener on component unmount
+  }, [router]);
 
-  const resetScores = () => {
-    setUserScore(0);
-    setComputerScore(0);
-    setUserMove('');
-    setComputerMove('');
-    setResult('');
-  };
+  if (user === null) {
+    return <div>Loading...</div>; // Optionally, show a loading state while checking auth
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-3xl">
-        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
-          Rock Paper Scissors
-        </h1>
-        <div className="flex justify-around mb-4">
-          <button className="btn btn-primary" onClick={() => playGame('rock')}>
-            Rock
-          </button>
-          <button className="btn btn-secondary" onClick={() => playGame('paper')}>
-            Paper
-          </button>
-          <button className="btn btn-accent" onClick={() => playGame('scissors')}>
-            Scissors
-          </button>
-        </div>
-        <div className="text-center mb-4">
-          <p className="mb-2">
-            <span className="font-bold">Your move:</span> {userMove}
-          </p>
-          <p className="mb-2">
-            <span className="font-bold">Computer's move:</span> {computerMove}
-          </p>
-          <h2 className="text-xl font-semibold mt-4">{result}</h2>
-        </div>
-        <div className="text-center mb-4">
-          <p className="text-lg">
-            <span className="font-bold">Your Score:</span> {userScore}
-          </p>
-          <p className="text-lg">
-            <span className="font-bold">Computer's Score:</span> {computerScore}
-          </p>
-        </div>
-        <div className="text-center">
-          <button className="btn btn-warning" onClick={resetScores}>
-            Reset Scores
-          </button>
-        </div>
-      </div>
+      <GameLogic />
     </div>
   );
-}
+};
+
+export default HomePage;

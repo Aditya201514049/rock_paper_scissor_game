@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import { auth } from '@/lib/firebase';
@@ -20,14 +18,14 @@ const Navbar = () => {
   const handleSignOut = async () => {
     try {
       await auth.signOut();
-      router.push('/signin'); // Redirect to the sign-in page after sign out
+      router.push('/signin'); // Redirect to the sign-in page after sign-out
     } catch (error) {
       console.error('Error signing out:', error);
     }
   };
 
   return (
-    <nav className="bg-blue-600 text-white p-2 shadow-md">
+    <nav className="bg-gray-800 text-white p-2 shadow-md fixed top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div
           className="text-2xl font-bold cursor-pointer"
@@ -73,7 +71,7 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            // Do not show Sign In button here; the user will be redirected to it after sign out
+            // No sign-in button is displayed since the user is redirected after signing out
             null
           )}
         </div>

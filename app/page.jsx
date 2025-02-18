@@ -45,8 +45,8 @@ const HomePage = () => {
 
      
         <div className="w-[30%]">
-          <div className="bg-white rounded-lg shadow-lg p-6 h-full">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Game Stats</h2>
+          <div className="bg-gray-100 rounded-lg shadow-lg p-6 h-full">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center font-serif">Game Stats</h2>
             <Stats gameHistory={gameHistory} /> 
           </div>
         </div>

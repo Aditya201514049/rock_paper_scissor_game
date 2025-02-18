@@ -46,7 +46,7 @@ const Stats = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 w-80">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">Game Stats</h2>
+      
       <p className="text-gray-700">
         Total Games: <span className="font-bold">{totalGames}</span>
       </p>

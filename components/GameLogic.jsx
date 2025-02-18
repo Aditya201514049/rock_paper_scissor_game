@@ -4,7 +4,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import RoundSelector from '@/components/RoundSelector';
-import { auth } from '@/lib/firebase';
 import { saveStatsToFirestore } from '@/lib/firebaseUtils'; // Import the Firestore update function
 
 const moves = ['rock', 'paper', 'scissors'];
@@ -108,8 +107,7 @@ const GameLogic = () => {
 
   return (
     <div className="bg-base-200 p-8 rounded-lg shadow-lg w-full">
-      <h1 className="text-4xl font-bold text-center mb-6 text-primary">Rock Paper Scissors</h1>
-
+      
       <RoundSelector onSelectRounds={setRounds} />
 
       <div className="text-center my-4">

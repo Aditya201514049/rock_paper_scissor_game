@@ -1,5 +1,5 @@
 
-
+/*
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -46,14 +46,14 @@ const Stats = ({ gameHistory }) => {
 };
 
 export default Stats;
+*/
 
-
-/*
 'use client';
 
 import { useState, useEffect } from 'react';
-import { auth, firestore } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { firestore } from '@/lib/firebase';
 
 const Stats = () => {
   const [totalGames, setTotalGames] = useState(0);
@@ -61,46 +61,43 @@ const Stats = () => {
   const [losses, setLosses] = useState(0);
   const [draws, setDraws] = useState(0);
   const [winRatio, setWinRatio] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [gameHistory, setGameHistory] = useState([]);
+  const user = auth.currentUser;
 
   useEffect(() => {
-    const fetchStats = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const userStatsRef = doc(firestore, 'userStats', user.uid);
-        const docSnap = await getDoc(userStatsRef);
+    if (user) {
+      const userStatsRef = doc(firestore, 'userStats', user.uid);
 
+      const unsubscribe = onSnapshot(userStatsRef, (docSnap) => {
         if (docSnap.exists()) {
-          const data = docSnap.data();
-          setWins(data.wins || 0);
-          setLosses(data.losses || 0);
-          setDraws(data.draws || 0);
-          setTotalGames(data.totalGames || 0);
+          const statsData = docSnap.data();
+          setGameHistory(statsData.gameHistory || []);  // Assuming gameHistory is stored in Firestore
+          
+          // Update total games
+          setTotalGames(statsData.gameHistory.length);
 
-          if (data.totalGames > 0) {
-            const ratio = ((data.wins / data.totalGames) * 100).toFixed(2);
+          // Calculate wins, losses, and draws
+          const winsCount = statsData.gameHistory.filter((game) => game.result === 'win').length;
+          const lossesCount = statsData.gameHistory.filter((game) => game.result === 'lose').length;
+          const drawsCount = statsData.gameHistory.filter((game) => game.result === 'draw').length;
+
+          setWins(winsCount);
+          setLosses(lossesCount);
+          setDraws(drawsCount);
+
+          // Calculate win ratio
+          if (statsData.gameHistory.length > 0) {
+            const ratio = ((winsCount / statsData.gameHistory.length) * 100).toFixed(2);
             setWinRatio(ratio);
           } else {
             setWinRatio(0);
           }
-        } else {
-          // If no stats exist for the user, set them to 0
-          setWins(0);
-          setLosses(0);
-          setDraws(0);
-          setTotalGames(0);
-          setWinRatio(0);
         }
-      }
-      setLoading(false);
-    };
+      });
 
-    fetchStats();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+      return () => unsubscribe(); // Cleanup on unmount
+    }
+  }, [user]);
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 w-80">
@@ -116,4 +113,4 @@ const Stats = () => {
 
 export default Stats;
 
-*/
+

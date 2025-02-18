@@ -1,24 +1,46 @@
 
-
 'use client';
 
 import { auth } from '@/lib/firebase';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 const Navbar = () => {
+  // All hooks called unconditionally at the top
   const [user, setUser] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const dropdownRef = useRef(null);
 
+  // Authentication state listener
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       setUser(authUser);
     });
     return () => unsubscribe();
   }, []);
+
+  // Click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [dropdownRef]);
+
+  // Conditional return AFTER all hooks
+  if (pathname === '/signin') {
+    return (
+      <div className="fixed top-0 left-0 w-full h-0 bg-gray-100 z-50" />
+    );
+  }
 
   const handleSignOut = async () => {
     try {
@@ -42,10 +64,15 @@ const Navbar = () => {
         >
           Rock Paper Scissors
         </div>
-        <div className="md:hidden">
+
+        {/* Mobile Menu */}
+        <div className="md:hidden relative">
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-white focus:outline-none"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMenuOpen(!isMenuOpen);
+            }}
+            className="text-white focus:outline-none z-50 p-2"
           >
             <svg
               className="w-6 h-6"
@@ -71,29 +98,72 @@ const Navbar = () => {
               )}
             </svg>
           </button>
+
+          {isMenuOpen && (
+            <div
+              ref={dropdownRef}
+              className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-40 border border-gray-700"
+            >
+              <div className="flex flex-col p-2 space-y-2">
+                {user ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        router.push('/');
+                        setIsMenuOpen(false);
+                      }}
+                      className="text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                    >
+                      Game
+                    </button>
+                    <button
+                      onClick={() => {
+                        router.push('/leaderboard');
+                        setIsMenuOpen(false);
+                      }}
+                      className="text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                    >
+                      Leaderboard
+                    </button>
+                    <button
+                      onClick={() => {
+                        router.push('/profile');
+                        setIsMenuOpen(false);
+                      }}
+                      className="text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                    >
+                      Profile
+                    </button>
+                    <button
+                      onClick={handleSignOut}
+                      className="text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : null}
+              </div>
+            </div>
+          )}
         </div>
-        <div className={`md:flex ${isMenuOpen ? 'block' : 'hidden'} w-full md:w-auto`}>
-          {user ? (
-            <div className="flex flex-col md:flex-row items-center gap-4">
+
+        {/* Desktop Menu */}
+        <div className="hidden md:flex w-full md:w-auto">
+          {user && (
+            <div className="flex items-center gap-4">
               <button
-                onClick={() => {
-                  router.push('/');
-                  setIsMenuOpen(false);
-                }}
+                onClick={() => router.push('/')}
                 className={getButtonClasses('/')}
               >
                 Game
               </button>
               <button
-                onClick={() => {
-                  router.push('/leaderboard');
-                  setIsMenuOpen(false);
-                }}
+                onClick={() => router.push('/leaderboard')}
                 className={getButtonClasses('/leaderboard')}
               >
                 Leaderboard
               </button>
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="btn btn-ghost hover:underline flex items-center"
@@ -106,23 +176,18 @@ const Navbar = () => {
                   Profile
                 </button>
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-20">
+                  <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50">
                     <button
                       onClick={() => {
                         router.push('/profile');
                         setIsDropdownOpen(false);
-                        setIsMenuOpen(false);
                       }}
                       className="block px-4 py-2 text-sm hover:bg-gray-200 w-full text-left"
                     >
                       View Profile
                     </button>
                     <button
-                      onClick={() => {
-                        handleSignOut();
-                        setIsDropdownOpen(false);
-                        setIsMenuOpen(false);
-                      }}
+                      onClick={handleSignOut}
                       className="block px-4 py-2 text-sm hover:bg-gray-200 w-full text-left"
                     >
                       Sign Out
@@ -131,7 +196,7 @@ const Navbar = () => {
                 )}
               </div>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </nav>

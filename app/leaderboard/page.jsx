@@ -42,7 +42,7 @@ export default function Leaderboard() {
 
   return (
     <div className="p-6 mt-10">
-      <h1 className="text-3xl font-bold text-center mb-4">Leaderboard</h1>
+      <h1 className="text-3xl font-bold text-center mt-10 mb-4">Leaderboard</h1>
       <div className="flex justify-center mb-6">
         <select
           className="select select-bordered w-full max-w-xs"

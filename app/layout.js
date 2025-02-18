@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
         <Navbar />
         
         {/* Main content */}
-        <main className="flex-grow mt-10">{children}</main>
+        <main className="flex-grow mt-0">{children}</main>
 
         {/* Footer stays at the bottom */}
         <Footer />

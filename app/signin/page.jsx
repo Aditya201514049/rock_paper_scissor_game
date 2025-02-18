@@ -21,7 +21,7 @@ const SignInPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
       <div className="card w-96 bg-base-100 shadow-2xl p-8 transform transition duration-300 hover:scale-105">
-        <h1 className="text-4xl font-bold text-center text-primary mb-4">Welcome</h1>
+        <h1 className="text-4xl font-bold text-center text-primary mb-4">Rock Paper Scissor</h1>
         <p className="text-center text-gray-500 mb-6">Sign in to continue</p>
         <GoogleSignIn />
         <p className="text-center text-gray-400 text-sm mt-4">

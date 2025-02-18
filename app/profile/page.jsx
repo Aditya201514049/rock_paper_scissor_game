@@ -23,7 +23,7 @@ const Profile = () => {
   if (!user) return <p>Loading...</p>;
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6 mt-10">
+    <div className="max-w-md mx-auto bg-gray-100 shadow-lg rounded-lg p-6 mt-10">
       <h1 className="text-2xl font-bold text-gray-800">Profile</h1>
       <div className="mt-4">
         <img

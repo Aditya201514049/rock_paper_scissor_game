@@ -1,12 +1,14 @@
+
 'use client';
 
 import { auth } from '@/lib/firebase';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
   const router = useRouter();
+  const pathname = usePathname(); // Get the current path
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
@@ -24,6 +26,11 @@ const Navbar = () => {
     }
   };
 
+  // Helper function to generate active classes
+  const getButtonClasses = (path) => {
+    return `btn ${pathname === path ? 'btn-primary' : 'btn-ghost'} hover:underline`;
+  };
+
   return (
     <nav className="bg-gray-800 text-white p-2 shadow-md fixed top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -39,20 +46,20 @@ const Navbar = () => {
             <>
               <button
                 onClick={() => router.push('/')}
-                className="hover:underline"
+                className={getButtonClasses('/')}
               >
                 Game
               </button>
 
               <button
                 onClick={() => router.push('/leaderboard')}
-                className="hover:underline"
+                className={getButtonClasses('/leaderboard')}
               >
                 Leaderboard
               </button>
               <button
                 onClick={() => router.push('/profile')}
-                className="hover:underline"
+                className={getButtonClasses('/profile')}
               >
                 Profile
               </button>
@@ -65,15 +72,12 @@ const Navbar = () => {
               />
               <button
                 onClick={handleSignOut}
-                className="bg-red-500 px-3 py-1 rounded hover:bg-red-700"
+                className="btn bg-red-500 px-3 py-1 rounded hover:bg-red-700"
               >
                 Sign Out
               </button>
             </>
-          ) : (
-            // No sign-in button is displayed since the user is redirected after signing out
-            null
-          )}
+          ) : null}
         </div>
       </div>
     </nav>

@@ -1,53 +1,48 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import GameLogic from '@/components/GameLogic';
-import Stats from '@/components/Stats'; // Import the Stats component
+import Stats from '@/components/Stats';
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
-  const [gameHistory, setGameHistory] = useState([]); // State to store game history
+  const [gameHistory, setGameHistory] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (!authUser) {
-        // If no user is signed in, redirect to the sign-in page
         router.push('/signin');
       } else {
         setUser(authUser);
       }
     });
 
-    return () => unsubscribe(); // Clean up the listener on component unmount
+    return () => unsubscribe();
   }, [router]);
 
-  // Function to update game history with the final result of a game
   const updateGameHistory = (result) => {
     setGameHistory((prevHistory) => [...prevHistory, { result }]);
   };
 
   if (user === null) {
-    return <div>Loading...</div>; // Optionally, show a loading state while checking auth
+    return <div>Loading...</div>;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-6">
-     
-      <div className="w-full max-w-7xl flex gap-6">
-       
-        <div className="flex-1 w-[70%]">
-          <GameLogic updateGameHistory={updateGameHistory} /> 
+      <div className="flex flex-col md:flex-row gap-6 w-full max-w-7xl">
+        <div className="w-full md:w-2/3">
+          <GameLogic updateGameHistory={updateGameHistory} />
         </div>
-
-     
-        <div className="w-[30%]">
+        <div className="w-full md:w-1/3">
           <div className="bg-gray-100 rounded-lg shadow-lg p-6 h-full">
             <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center font-serif">Game Stats</h2>
-            <Stats gameHistory={gameHistory} /> 
+            <Stats gameHistory={gameHistory} />
           </div>
         </div>
       </div>

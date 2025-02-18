@@ -62,11 +62,11 @@ export default function Leaderboard() {
           <table className="table w-full">
             <thead>
               <tr>
-                <th>#</th>
-                <th>User</th>
-                <th>Total Wins</th>
-                <th>Total Matches</th>
-                <th>Win Ratio</th>
+                <th className="whitespace-nowrap">#</th>
+                <th className="whitespace-nowrap">User</th>
+                <th className="whitespace-nowrap">Total Wins</th>
+                <th className="whitespace-nowrap">Total Matches</th>
+                <th className="whitespace-nowrap">Win Ratio</th>
               </tr>
             </thead>
             <tbody>
@@ -77,11 +77,11 @@ export default function Leaderboard() {
                     : '0.00';
                 return (
                   <tr key={stat.id}>
-                    <th>{index + 1}</th>
-                    <td>{stat.displayName || stat.id}</td>
-                    <td>{stat.wins}</td>
-                    <td>{stat.totalGames}</td>
-                    <td>{ratio}%</td>
+                    <th className="whitespace-nowrap">{index + 1}</th>
+                    <td className="whitespace-nowrap">{stat.displayName || stat.id}</td>
+                    <td className="whitespace-nowrap">{stat.wins}</td>
+                    <td className="whitespace-nowrap">{stat.totalGames}</td>
+                    <td className="whitespace-nowrap">{ratio}%</td>
                   </tr>
                 );
               })}

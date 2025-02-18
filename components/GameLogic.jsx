@@ -116,14 +116,14 @@ const GameLogic = () => {
         </p>
       </div>
 
-      <div className="flex justify-around mb-6">
-        <button className="btn btn-primary btn-lg" onClick={() => playGame('rock')} disabled={gameOver}>
+      <div className="flex justify-around mb-6 flex-wrap">
+        <button className="btn btn-primary px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-4 md:text-lg" onClick={() => playGame('rock')} disabled={gameOver}>
           ✊ Rock
         </button>
-        <button className="btn btn-secondary btn-lg" onClick={() => playGame('paper')} disabled={gameOver}>
+        <button className="btn btn-secondary px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-4 md:text-lg" onClick={() => playGame('paper')} disabled={gameOver}>
           ✋ Paper
         </button>
-        <button className="btn btn-accent btn-lg" onClick={() => playGame('scissors')} disabled={gameOver}>
+        <button className="btn btn-accent px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-4 md:text-lg" onClick={() => playGame('scissors')} disabled={gameOver}>
           ✌️ Scissors
         </button>
       </div>

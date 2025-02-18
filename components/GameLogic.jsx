@@ -4,12 +4,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import RoundSelector from '@/components/RoundSelector';
-import { firestore, auth } from '@/lib/firebase'; // Import Firestore
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
+import { saveStatsToFirestore } from '@/lib/firebaseUtils'; // Import the Firestore update function
 
 const moves = ['rock', 'paper', 'scissors'];
 
-const GameLogic = ({ updateGameHistory }) => {
+const GameLogic = () => {
   const [userMove, setUserMove] = useState('');
   const [computerMove, setComputerMove] = useState('');
   const [result, setResult] = useState('');
@@ -20,24 +20,8 @@ const GameLogic = ({ updateGameHistory }) => {
   const [gameOver, setGameOver] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  // To ensure history is updated only once per complete game
   const hasUpdatedHistory = useRef(false);
-
-  // New function to update game history in Firestore
-  const saveGameHistoryToFirestore = async (result) => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const userStatsRef = doc(firestore, 'userStats', user.uid);
-    const docSnap = await getDoc(userStatsRef);
-
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      const newGameHistory = [...(data.gameHistory || []), { result, userScore, computerScore, date: new Date() }];
-      await updateDoc(userStatsRef, { gameHistory: newGameHistory });
-    } else {
-      await updateDoc(userStatsRef, { gameHistory: [{ result, userScore, computerScore, date: new Date() }] });
-    }
-  };
 
   const playGame = (move) => {
     if (gameOver) return;
@@ -67,24 +51,38 @@ const GameLogic = ({ updateGameHistory }) => {
     const newRound = currentRound + 1;
     setCurrentRound(newRound);
 
+    // If game has reached the designated number of rounds, finalize results
     if (newRound >= rounds) {
-      // Determine the final result of the game
+      // Since state updates are asynchronous, compute final scores manually:
+      const finalUserScore = userScore + (roundResult === 'win' ? 1 : 0);
+      const finalComputerScore = computerScore + (roundResult === 'lose' ? 1 : 0);
+
       let finalResult = '';
-      if (userScore + (roundResult === 'win' ? 1 : 0) > computerScore + (roundResult === 'lose' ? 1 : 0)) {
+      if (finalUserScore > finalComputerScore) {
         finalResult = 'win';
-      } else if (userScore + (roundResult === 'win' ? 1 : 0) < computerScore + (roundResult === 'lose' ? 1 : 0)) {
+      } else if (finalUserScore < finalComputerScore) {
         finalResult = 'lose';
       } else {
         finalResult = 'draw';
       }
 
-      // Update game history in Firestore (only once)
+      // Update Firestore with game stats if not already done for this game
       if (!hasUpdatedHistory.current) {
-        saveGameHistoryToFirestore(finalResult);
-        hasUpdatedHistory.current = true; // Mark as updated
+        // We update overall stats and append a history entry.
+        saveStatsToFirestore({
+          wins: finalResult === 'win' ? 1 : 0,
+          losses: finalResult === 'lose' ? 1 : 0,
+          draws: finalResult === 'draw' ? 1 : 0,
+          gameHistory: [{
+            result: finalResult,
+            userScore: finalUserScore,
+            computerScore: finalComputerScore,
+            date: new Date()
+          }]
+        });
+        hasUpdatedHistory.current = true;
       }
 
-      // End the game
       setGameOver(true);
       setShowModal(true);
     }
@@ -105,7 +103,7 @@ const GameLogic = ({ updateGameHistory }) => {
     setCurrentRound(0);
     setGameOver(false);
     setShowModal(false);
-    hasUpdatedHistory.current = false; // Reset the ref when the game restarts
+    hasUpdatedHistory.current = false; // Reset for next game
   };
 
   return (
@@ -133,8 +131,12 @@ const GameLogic = ({ updateGameHistory }) => {
       </div>
 
       <div className="text-center my-4">
-        <p className="mb-2 text-lg font-bold text-primary">Your Move: <span className="badge badge-outline">{userMove}</span></p>
-        <p className="mb-2 text-lg font-bold text-secondary">Computer's Move: <span className="badge badge-outline">{computerMove}</span></p>
+        <p className="mb-2 text-lg font-bold text-primary">
+          Your Move: <span className="badge badge-outline">{userMove}</span>
+        </p>
+        <p className="mb-2 text-lg font-bold text-secondary">
+          Computer's Move: <span className="badge badge-outline">{computerMove}</span>
+        </p>
         <h2 className="text-2xl font-semibold mt-4 text-success">{result}</h2>
       </div>
 
@@ -160,7 +162,9 @@ const GameLogic = ({ updateGameHistory }) => {
               <div className="modal-box">
                 <h2 className="text-3xl font-bold text-center mb-4">{getFinalResult()}</h2>
                 <p className="text-lg text-center">Final Score:</p>
-                <p className="text-2xl font-semibold text-center my-2">You: {userScore} - Computer: {computerScore}</p>
+                <p className="text-2xl font-semibold text-center my-2">
+                  You: {userScore} - Computer: {computerScore}
+                </p>
                 <div className="modal-action">
                   <button className="btn btn-primary btn-wide" onClick={resetGame}>Play Again</button>
                 </div>
@@ -174,5 +178,4 @@ const GameLogic = ({ updateGameHistory }) => {
 };
 
 export default GameLogic;
-
 

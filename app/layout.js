@@ -1,7 +1,8 @@
-
-
+// app/layout.js
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer'; // Import Footer
+import Footer from '@/components/Footer';
+import { ThemeProvider } from '@/context/ThemeContext';
+ // Import our client provider
 import './globals.css';
 
 export const metadata = {
@@ -12,14 +13,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className=" text-gray-900 flex flex-col min-h-screen">
-        {/* Navbar stays on top */}
-        <Navbar />
-        
-        {/* Main content */}
-        <main className="flex-grow mt-0">{children}</main>
-
-        {/* Footer stays at the bottom */}
+      <body className="text-gray-900 flex flex-col min-h-screen">
+        {/* Wrap Navbar and main content with ThemeProvider */}
+        <ThemeProvider>
+          <Navbar />
+          <main className="flex-grow mt-0">{children}</main>
+        </ThemeProvider>
         <Footer />
       </body>
     </html>

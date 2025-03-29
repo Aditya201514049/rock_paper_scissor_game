@@ -2,20 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
+  min-height: 100vh;
+}
+
+/* Global theme styles for better dark mode visibility */
+.table th {
+  @apply text-base-content font-semibold;
+}
+
+.table td {
+  @apply text-base-content;
+}
+
+.modal-box {
+  @apply text-base-content;
+}
+
+.badge {
+  @apply text-current;
+}
+
+/* Text that should always be readable in both themes */
+h1, h2, h3, h4, h5, h6 {
+  @apply text-base-content;
+}
+
+p, span, div {
+  @apply text-base-content;
+}
+
+label {
+  @apply text-base-content;
+}
+
+select, option {
+  @apply text-base-content;
+}
+
+input {
+  @apply text-base-content;
 }

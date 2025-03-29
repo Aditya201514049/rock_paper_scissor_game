@@ -6,15 +6,28 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
-    },
+    extend: {},
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["light", "dark", "cupcake"], // Add more themes if needed
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/theming/themes")["light"],
+          "base-content": "#171717",
+          "primary-content": "#ffffff",
+          "secondary-content": "#ffffff",
+          "accent-content": "#ffffff",
+        },
+        dark: {
+          ...require("daisyui/src/theming/themes")["dark"],
+          "base-content": "#e0e0e0",
+          "primary-content": "#ffffff",
+          "secondary-content": "#ffffff", 
+          "accent-content": "#ffffff",
+        },
+      },
+      "cupcake"
+    ],
   },
 };

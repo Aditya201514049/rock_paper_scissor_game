@@ -1,10 +1,10 @@
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import RoundSelector from '@/components/RoundSelector';
 import { saveStatsToFirestore } from '@/lib/firebaseUtils'; // Import the Firestore update function
+import { useTheme } from '@/context/ThemeContext';
 
 const moves = ['rock', 'paper', 'scissors'];
 
@@ -18,6 +18,7 @@ const GameLogic = () => {
   const [currentRound, setCurrentRound] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const { theme } = useTheme();
 
   // To ensure history is updated only once per complete game
   const hasUpdatedHistory = useRef(false);
@@ -106,17 +107,17 @@ const GameLogic = () => {
   };
 
   return (
-    <div className="bg-base-200 p-8 rounded-lg shadow-lg w-full">
+    <div className="bg-base-100 p-8 rounded-lg shadow-lg w-full">
       
       <RoundSelector onSelectRounds={setRounds} />
 
       <div className="text-center my-4">
-        <p className="text-lg font-semibold">
+        <p className="text-lg font-semibold text-base-content">
           Round <span className="badge badge-info">{currentRound}</span> / {rounds}
         </p>
       </div>
 
-      <div className="flex justify-around mb-6 flex-wrap">
+      <div className="flex justify-around mb-6 flex-wrap gap-2">
         <button className="btn btn-primary px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-4 md:text-lg" onClick={() => playGame('rock')} disabled={gameOver}>
           ✊ Rock
         </button>
@@ -129,18 +130,22 @@ const GameLogic = () => {
       </div>
 
       <div className="text-center my-4">
-        <p className="mb-2 text-lg font-bold text-primary">
-          Your Move: <span className="badge badge-outline">{userMove}</span>
-        </p>
-        <p className="mb-2 text-lg font-bold text-secondary">
-          Computer's Move: <span className="badge badge-outline">{computerMove}</span>
-        </p>
-        <h2 className="text-2xl font-semibold mt-4 text-success">{result}</h2>
+        <div className="mb-2 text-lg font-bold">
+          Your Move: <span className="badge badge-primary badge-outline">{userMove}</span>
+        </div>
+        <div className="mb-2 text-lg font-bold">
+          Computer's Move: <span className="badge badge-secondary badge-outline">{computerMove}</span>
+        </div>
+        <h2 className="text-2xl font-semibold mt-4">{result}</h2>
       </div>
 
       <div className="text-center my-4">
-        <p className="text-xl font-bold text-info">Your Score: {userScore}</p>
-        <p className="text-xl font-bold text-error">Computer's Score: {computerScore}</p>
+        <div className="text-xl font-bold text-base-content">
+          <span className="text-primary">Your Score:</span> {userScore}
+        </div>
+        <div className="text-xl font-bold text-base-content">
+          <span className="text-secondary">Computer's Score:</span> {computerScore}
+        </div>
       </div>
 
       <div className="text-center">
@@ -161,7 +166,7 @@ const GameLogic = () => {
                 <h2 className="text-3xl font-bold text-center mb-4">{getFinalResult()}</h2>
                 <p className="text-lg text-center">Final Score:</p>
                 <p className="text-2xl font-semibold text-center my-2">
-                  You: {userScore} - Computer: {computerScore}
+                  <span className="text-primary">You: {userScore}</span> - <span className="text-secondary">Computer: {computerScore}</span>
                 </p>
                 <div className="modal-action">
                   <button className="btn btn-primary btn-wide" onClick={resetGame}>Play Again</button>

@@ -38,14 +38,14 @@ const HomePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-base-200 pt-20 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-base-200 pt-24 flex items-center justify-center p-6">
       <div className="flex flex-col md:flex-row gap-6 w-full max-w-7xl">
         <div className="w-full md:w-2/3">
           <GameLogic updateGameHistory={updateGameHistory} />
         </div>
         <div className="w-full md:w-1/3">
           <div className="card bg-base-100 shadow-xl p-6 h-full">
-            <h2 className="text-2xl font-bold text-center font-serif card-title justify-center mb-4">Game Stats</h2>
+            <h2 className="text-2xl font-bold text-center font-serif card-title justify-center mb-4 text-base-content">Game Stats</h2>
             <Stats gameHistory={gameHistory} />
           </div>
         </div>

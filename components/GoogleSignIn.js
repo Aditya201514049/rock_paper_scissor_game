@@ -27,12 +27,12 @@ const GoogleSignIn = () => {
     <button
       onClick={handleSignIn}
       disabled={loading}
-      className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-white text-gray-700 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300"
+      className="btn btn-primary w-full"
     >
       {loading ? (
-        <span>Loading...</span>
+        <span className="loading loading-spinner loading-md"></span>
       ) : (
-        <>
+        <div className="flex items-center justify-center gap-2">
           <svg className="w-5 h-5" viewBox="0 0 48 48">
             <path
               fill="#4285F4"
@@ -52,7 +52,7 @@ const GoogleSignIn = () => {
             />
           </svg>
           <span className="text-sm font-medium">Sign in with Google</span>
-        </>
+        </div>
       )}
     </button>
   );

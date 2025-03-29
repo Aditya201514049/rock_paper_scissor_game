@@ -1,10 +1,10 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import { auth, firestore } from '@/lib/firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import { useTheme } from '@/context/ThemeContext';
 
 const Stats = () => {
   const [user, setUser] = useState(null);
@@ -13,6 +13,7 @@ const Stats = () => {
   const [losses, setLosses] = useState(0);
   const [draws, setDraws] = useState(0);
   const [winRatio, setWinRatio] = useState(0);
+  const { theme } = useTheme();
 
   // Listen for authentication state changes
   useEffect(() => {
@@ -45,23 +46,33 @@ const Stats = () => {
   }, [user]);
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 w-80">
-      
-      <p className="text-gray-700">
-        Total Games: <span className="font-bold">{totalGames}</span>
-      </p>
-      <p className="text-green-600">
-        Wins: <span className="font-bold">{wins}</span>
-      </p>
-      <p className="text-red-600">
-        Losses: <span className="font-bold">{losses}</span>
-      </p>
-      <p className="text-gray-600">
-        Draws: <span className="font-bold">{draws}</span>
-      </p>
-      <p className="text-blue-600">
-        Win Ratio: <span className="font-bold">{winRatio}%</span>
-      </p>
+    <div className="w-full">
+      <div className="stats stats-vertical shadow w-full">
+        <div className="stat">
+          <div className="stat-title">Total Games</div>
+          <div className="stat-value text-primary">{totalGames}</div>
+        </div>
+        
+        <div className="stat">
+          <div className="stat-title">Wins</div>
+          <div className="stat-value text-success">{wins}</div>
+        </div>
+        
+        <div className="stat">
+          <div className="stat-title">Losses</div>
+          <div className="stat-value text-error">{losses}</div>
+        </div>
+        
+        <div className="stat">
+          <div className="stat-title">Draws</div>
+          <div className="stat-value text-secondary">{draws}</div>
+        </div>
+        
+        <div className="stat">
+          <div className="stat-title">Win Ratio</div>
+          <div className="stat-value text-accent">{winRatio}%</div>
+        </div>
+      </div>
     </div>
   );
 };

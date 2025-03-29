@@ -1,13 +1,14 @@
-
 'use client';
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function Leaderboard() {
   const [stats, setStats] = useState([]);
   const [sortBy, setSortBy] = useState('wins'); // default sort parameter
   const [loading, setLoading] = useState(true);
+  const { theme } = useTheme();
 
   // Fetch stats from Firestore
   const fetchStats = async () => {
@@ -41,54 +42,68 @@ export default function Leaderboard() {
   });
 
   return (
-    <div className="p-6 mt-10">
-      <h1 className="text-3xl font-bold text-center mt-10 mb-4">Leaderboard</h1>
-      <div className="flex justify-center mb-6">
-        <select
-          className="select select-bordered w-full max-w-xs"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-        >
-          <option value="wins">Total Wins</option>
-          <option value="winRatio">Win Ratio</option>
-          <option value="totalGames">Total Matches</option>
-        </select>
-      </div>
-
-      {loading ? (
-        <p className="text-center">Loading...</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="table w-full">
-            <thead>
-              <tr>
-                <th className="whitespace-nowrap">#</th>
-                <th className="whitespace-nowrap">User</th>
-                <th className="whitespace-nowrap">Total Wins</th>
-                <th className="whitespace-nowrap">Total Matches</th>
-                <th className="whitespace-nowrap">Win Ratio</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedStats.map((stat, index) => {
-                const ratio =
-                  stat.totalGames > 0
-                    ? ((stat.wins / stat.totalGames) * 100).toFixed(2)
-                    : '0.00';
-                return (
-                  <tr key={stat.id}>
-                    <th className="whitespace-nowrap">{index + 1}</th>
-                    <td className="whitespace-nowrap">{stat.displayName || stat.id}</td>
-                    <td className="whitespace-nowrap">{stat.wins}</td>
-                    <td className="whitespace-nowrap">{stat.totalGames}</td>
-                    <td className="whitespace-nowrap">{ratio}%</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+    <div className="min-h-screen bg-base-200 pt-24 pb-10 px-4">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold text-center mb-6">Leaderboard</h1>
+        <div className="flex justify-center mb-6">
+          <select
+            className="select select-bordered w-full max-w-xs"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="wins">Total Wins</option>
+            <option value="winRatio">Win Ratio</option>
+            <option value="totalGames">Total Matches</option>
+          </select>
         </div>
-      )}
+
+        {loading ? (
+          <div className="flex justify-center my-10">
+            <span className="loading loading-spinner loading-lg text-primary"></span>
+          </div>
+        ) : (
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <div className="overflow-x-auto">
+                <table className="table table-zebra w-full">
+                  <thead>
+                    <tr>
+                      <th className="bg-base-200">#</th>
+                      <th className="bg-base-200">User</th>
+                      <th className="bg-base-200">Total Wins</th>
+                      <th className="bg-base-200">Total Matches</th>
+                      <th className="bg-base-200">Win Ratio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedStats.map((stat, index) => {
+                      const ratio =
+                        stat.totalGames > 0
+                          ? ((stat.wins / stat.totalGames) * 100).toFixed(2)
+                          : '0.00';
+                      return (
+                        <tr key={stat.id} className="hover">
+                          <th>{index + 1}</th>
+                          <td>{stat.displayName || stat.id}</td>
+                          <td className="text-success font-medium">{stat.wins}</td>
+                          <td>{stat.totalGames}</td>
+                          <td className="font-medium">{ratio}%</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              {sortedStats.length === 0 && (
+                <div className="alert alert-info">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>No players found in the leaderboard.</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

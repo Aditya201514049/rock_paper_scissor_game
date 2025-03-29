@@ -19,7 +19,7 @@ const RoundSelector = ({ onSelectRounds }) => {
         id="rounds"
         value={rounds}
         onChange={handleChange}
-        className="w-24 p-2 border rounded text-center"
+        className="input input-bordered w-24 text-center"
         min="1"
         max="100"
       />

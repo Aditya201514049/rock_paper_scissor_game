@@ -15,6 +15,7 @@ const Navbar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const dropdownRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
   // Authentication state listener
   useEffect(() => {
@@ -27,6 +28,11 @@ const Navbar = () => {
   // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Don't close the menu if clicking the menu button - let the button's onClick handle that
+      if (menuButtonRef.current && menuButtonRef.current.contains(event.target)) {
+        return;
+      }
+      
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
         setIsMenuOpen(false);
@@ -35,7 +41,7 @@ const Navbar = () => {
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [dropdownRef]);
+  }, [dropdownRef, menuButtonRef]);
 
   // Conditional return AFTER all hooks
   if (pathname === '/signin') {
@@ -56,6 +62,11 @@ const Navbar = () => {
   const getButtonClasses = (path) => {
     return `btn ${pathname === path ? 'btn-primary' : 'btn-ghost'} hover:underline`;
   };
+  
+  // Handle menu toggle
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <div className="navbar bg-base-300 text-base-content shadow-md fixed top-0 left-0 w-full z-50">
@@ -70,12 +81,10 @@ const Navbar = () => {
         </div>
 
         {/* Mobile menu - only visible on mobile */}
-        <div className="navbar-end md:hidden">
+        <div className="navbar-end md:hidden flex justify-end w-full">
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsMenuOpen(!isMenuOpen);
-            }}
+            ref={menuButtonRef}
+            onClick={toggleMenu}
             className="btn btn-ghost btn-circle"
           >
             <svg
@@ -106,7 +115,7 @@ const Navbar = () => {
           {isMenuOpen && (
             <div
               ref={dropdownRef}
-              className="absolute right-0 top-16 w-48 bg-base-200 rounded-md shadow-lg z-40 border border-base-300"
+              className="absolute right-2 top-16 w-48 bg-base-200 rounded-md shadow-lg z-40 border border-base-300"
             >
               <div className="flex flex-col p-2 space-y-2">
                 {user ? (

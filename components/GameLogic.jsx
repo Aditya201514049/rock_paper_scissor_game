@@ -159,10 +159,11 @@ const GameLogic = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-[9999]"
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
           >
             <div className="modal modal-open">
-              <div className="modal-box">
+              <div className="modal-box relative">
                 <h2 className="text-3xl font-bold text-center mb-4">{getFinalResult()}</h2>
                 <p className="text-lg text-center">Final Score:</p>
                 <p className="text-2xl font-semibold text-center my-2">

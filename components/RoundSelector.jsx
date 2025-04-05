@@ -11,18 +11,46 @@ const RoundSelector = ({ onSelectRounds }) => {
     onSelectRounds(value); // Pass selected rounds to parent component
   };
 
+  const incrementRounds = () => {
+    const newValue = Math.min(100, rounds + 1);
+    setRounds(newValue);
+    onSelectRounds(newValue);
+  };
+
+  const decrementRounds = () => {
+    const newValue = Math.max(1, rounds - 1);
+    setRounds(newValue);
+    onSelectRounds(newValue);
+  };
+
   return (
     <div className="flex flex-col items-center gap-2 mb-4">
       <label htmlFor="rounds" className="text-lg font-semibold">Select Rounds (1-100):</label>
-      <input
-        type="number"
-        id="rounds"
-        value={rounds}
-        onChange={handleChange}
-        className="input input-bordered w-24 text-center"
-        min="1"
-        max="100"
-      />
+      <div className="flex items-center">
+        <button 
+          onClick={decrementRounds} 
+          className="btn btn-sm btn-outline"
+          aria-label="Decrease rounds"
+        >
+          -
+        </button>
+        <input
+          type="number"
+          id="rounds"
+          value={rounds}
+          onChange={handleChange}
+          className="input input-bordered w-20 text-center mx-2"
+          min="1"
+          max="100"
+        />
+        <button 
+          onClick={incrementRounds} 
+          className="btn btn-sm btn-outline"
+          aria-label="Increase rounds"
+        >
+          +
+        </button>
+      </div>
     </div>
   );
 };

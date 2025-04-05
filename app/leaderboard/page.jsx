@@ -42,7 +42,7 @@ export default function Leaderboard() {
   });
 
   return (
-    <div className="min-h-screen bg-base-200 pt-28 md:pt-24 pb-10 px-4">
+    <div className="min-h-screen bg-base-200 pt-32 md:pt-24 pb-10 px-4">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-8">Leaderboard</h1>
         <div className="flex justify-center mb-6">

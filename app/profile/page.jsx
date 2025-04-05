@@ -189,7 +189,13 @@ const Profile = () => {
                                 'DRAW'}
                               </div>
                             </td>
-                            <td>{game.timestamp ? new Date(game.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</td>
+                            <td>
+                              {game.date ? 
+                                (game.date.seconds ? 
+                                  new Date(game.date.seconds * 1000).toLocaleDateString() : 
+                                  new Date(game.date).toLocaleDateString()) : 
+                                'N/A'}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
